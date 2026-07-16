@@ -1,0 +1,5 @@
+# Playbook semilla (stub M0). Estructura completa (beats, hook, subs...) llega en M2.
+schema_version: "0.0.1-stub"
+id: reel-educativo
+name: Reel educativo
+platform: instagram
