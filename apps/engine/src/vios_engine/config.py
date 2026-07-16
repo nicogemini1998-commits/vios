@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     storage_bucket: str = "vios-media"
     engine_port: int = 8000
     render_port: int = 4010
+    anthropic_api_key: str = ""          # vacía → agentes LLM deshabilitados
+    job_token_budget: int = 200_000      # presupuesto tokens por job (M5)
 
 
 def load_settings() -> Settings:

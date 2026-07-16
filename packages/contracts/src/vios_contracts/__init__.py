@@ -27,6 +27,14 @@ from .client_profile import (
     is_client_editable,
 )
 from .client_profile import SubtitleStyle as ClientSubtitleStyle
+from .edit_plan import (
+    EditPlan,
+    EditPlanValidationError,
+    HookCandidate,
+    PlannedBeat,
+    SelectedMoment,
+    validate_edit_plan,
+)
 from .media_intelligence import (
     EnergyPoint,
     Keyframe,
@@ -88,6 +96,9 @@ __all__ = [
     # playbook
     "Beat", "CTAPolicy", "DurationRange", "HookSpec", "MusicPolicy", "PacingPolicy",
     "Playbook", "PlaybookValidationError", "SubtitlePolicy", "validate_playbook",
+    # edit plan (M6)
+    "EditPlan", "EditPlanValidationError", "HookCandidate", "PlannedBeat",
+    "SelectedMoment", "validate_edit_plan",
     # media intelligence (M4)
     "MediaIntelligence", "Transcript", "Segment", "Word", "Scene", "Silence",
     "EnergyPoint", "Keyframe", "QualityScore",
