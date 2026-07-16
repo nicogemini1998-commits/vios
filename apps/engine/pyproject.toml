@@ -20,7 +20,8 @@ vios = "vios_engine.cli:app"
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-asyncio>=0.23", "pytest-cov>=5", "ruff>=0.5"]
 analysis = ["faster-whisper>=1.0", "scenedetect>=0.6", "librosa>=0.10"]
-llm = ["anthropic>=0.40"]
+llm = ["claude-agent-sdk>=0.1"]        # provider "subscription" (default): usa Claude Code
+llm-api = ["anthropic>=0.40"]          # provider "api": factura por token, solo a escala
 
 [tool.uv.sources]
 vios-contracts = { path = "../../packages/contracts", editable = true }

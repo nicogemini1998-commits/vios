@@ -103,6 +103,63 @@ def test_extract_json_plain_and_fenced():
         extract_json("sin json")
 
 
+# --- provider LLM (suscripción por defecto) ---
+
+class _FakeBlock:
+    def __init__(self, text):
+        self.text = text
+
+
+class _FakeAssistant:
+    def __init__(self, texts):
+        self.content = [_FakeBlock(t) for t in texts]
+
+
+class _FakeResult:
+    def __init__(self, usage, is_error=False, result=None):
+        self.usage = usage
+        self.is_error = is_error
+        self.result = result
+
+
+def test_parse_agent_messages_collects_text_and_usage():
+    from vios_engine.agents import parse_agent_messages
+
+    msgs = [
+        _FakeAssistant(["{\"a\": ", "1}"]),
+        _FakeResult({"input_tokens": 120, "output_tokens": 40}),
+    ]
+    res = parse_agent_messages(msgs)
+    assert res.text == '{"a": 1}'
+    assert res.tokens_in == 120
+    assert res.tokens_out == 40
+    assert res.tokens_total == 160
+
+
+def test_parse_agent_messages_raises_on_error_result():
+    from vios_engine.agents import parse_agent_messages
+
+    with pytest.raises(RuntimeError, match="rate"):
+        parse_agent_messages([_FakeResult({}, is_error=True, result="rate limit")])
+
+
+def test_build_llm_defaults_to_subscription(monkeypatch):
+    import vios_engine.agents.llm as llm_mod
+
+    # evita el import real del SDK: solo comprobamos la rama de selección
+    monkeypatch.setattr(llm_mod.ClaudeAgentLLM, "__init__",
+                        lambda self, model=llm_mod.DEFAULT_MODEL: None)
+    client = llm_mod.build_llm("subscription")
+    assert isinstance(client, llm_mod.ClaudeAgentLLM)
+
+
+def test_build_llm_unknown_provider():
+    from vios_engine.agents import build_llm
+
+    with pytest.raises(ValueError, match="desconocido"):
+        build_llm("gpt")
+
+
 # --- Director (M6) ---
 
 async def test_director_produces_valid_plan():

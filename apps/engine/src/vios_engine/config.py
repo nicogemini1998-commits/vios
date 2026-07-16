@@ -11,7 +11,9 @@ class Settings(BaseSettings):
     storage_bucket: str = "vios-media"
     engine_port: int = 8000
     render_port: int = 4010
-    anthropic_api_key: str = ""          # vacía → agentes LLM deshabilitados
+    llm_provider: str = "subscription"   # "subscription" (Claude Code, sin API) | "api"
+    anthropic_api_key: str = ""          # solo si llm_provider="api"
+    llm_model: str = "claude-sonnet-5"
     job_token_budget: int = 200_000      # presupuesto tokens por job (M5)
 
 
