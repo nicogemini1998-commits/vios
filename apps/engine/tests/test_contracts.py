@@ -1,7 +1,4 @@
-"""Contratos importan e instancian objetos válidos.
-
-TimelineIR (M1), ClientProfile + Playbook (M2) son reales; MediaIntelligence sigue stub.
-"""
+"""Contratos importan e instancian objetos válidos (M1 IR, M2 profile/playbook, M4 intelligence)."""
 from vios_contracts import (
     Canvas,
     ClientProfile,
@@ -29,6 +26,8 @@ def test_client_and_playbook_real():
     assert pb.schema_version == "1.0.0"
 
 
-def test_media_intelligence_stub():
+def test_media_intelligence_real():
     mi = MediaIntelligence(asset_id="a1", source_hash="deadbeef")
-    assert mi.schema_version.endswith("stub")
+    assert mi.schema_version == "1.0.0"
+    assert mi.transcript.segments == []
+    assert mi.quality.audio_ok is True
