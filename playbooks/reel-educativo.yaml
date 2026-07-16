@@ -1,0 +1,39 @@
+schema_version: "1.0.0"
+id: reel-educativo
+name: Reel educativo
+platforms: [instagram, tiktok, shorts]
+beats:
+  - { name: hook, rel_duration: 0.12, purpose: "Frenar el scroll con la promesa/dolor" }
+  - { name: contexto, rel_duration: 0.18, purpose: "Situar el problema en 1 frase" }
+  - { name: desarrollo, rel_duration: 0.50, purpose: "Explicar la idea con claridad, 1 concepto" }
+  - { name: prueba, rel_duration: 0.12, purpose: "Ejemplo o dato que lo respalda" }
+  - { name: cierre_cta, rel_duration: 0.08, purpose: "Recap + llamada a la accion" }
+hook:
+  max_seconds: 3.0
+  style: "pregunta o dato contraintuitivo"
+  land_by_seconds: 1.5
+subtitles:
+  enabled: true
+  karaoke: true
+  emphasis: true
+  uppercase: false
+music:
+  enabled: true
+  style: "beat sutil, no invasivo"
+  ducking: true
+  target_lufs: -14.0
+pacing:
+  cut_style: medium
+  zoom: true
+  energy: medium
+cta:
+  enabled: true
+  position: end
+  default_text: ""
+ideal_duration:
+  instagram: { min_s: 20, max_s: 45 }
+  tiktok:    { min_s: 20, max_s: 60 }
+  shorts:    { min_s: 20, max_s: 60 }
+target_metrics:
+  retention: 0.55
+  ctr: 0.03

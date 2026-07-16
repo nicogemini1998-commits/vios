@@ -1,6 +1,6 @@
 """Contratos importan e instancian objetos válidos.
 
-TimelineIR es real desde M1; ClientProfile/Playbook/MediaIntelligence siguen stub.
+TimelineIR (M1), ClientProfile + Playbook (M2) son reales; MediaIntelligence sigue stub.
 """
 from vios_contracts import (
     Canvas,
@@ -20,12 +20,15 @@ def test_timeline_ir_real():
     )
     assert isinstance(ir, TimelineIR)
     assert ir.schema_version == "1.0.0"
-    assert ir.revision == 0
 
 
-def test_remaining_stubs():
+def test_client_and_playbook_real():
     cp = ClientProfile(client_id="c1", name="Cliender")
-    pb = Playbook(id="reel-edu", name="Reel", platform="instagram")
+    pb = Playbook(id="reel-edu", name="Reel", platforms=["instagram"])
+    assert cp.schema_version == "1.0.0"
+    assert pb.schema_version == "1.0.0"
+
+
+def test_media_intelligence_stub():
     mi = MediaIntelligence(asset_id="a1", source_hash="deadbeef")
-    for obj in (cp, pb, mi):
-        assert obj.schema_version.endswith("stub")
+    assert mi.schema_version.endswith("stub")

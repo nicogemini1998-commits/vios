@@ -1,0 +1,38 @@
+schema_version: "1.0.0"
+id: podcast-clips
+name: Podcast a clips
+platforms: [instagram, tiktok, shorts, linkedin]
+beats:
+  - { name: hook, rel_duration: 0.10, purpose: "El mejor momento/frase del tramo" }
+  - { name: tension, rel_duration: 0.25, purpose: "Construir la idea que engancha" }
+  - { name: payoff, rel_duration: 0.50, purpose: "La reflexion/insight completo" }
+  - { name: cierre_cta, rel_duration: 0.15, purpose: "Remate + seguir el canal" }
+hook:
+  max_seconds: 3.0
+  style: "frase punchy extraida del propio audio (nunca inventada)"
+  land_by_seconds: 2.0
+subtitles:
+  enabled: true
+  karaoke: true
+  emphasis: true
+  uppercase: false
+music:
+  enabled: false
+  style: ""
+  ducking: true
+  target_lufs: -16.0
+pacing:
+  cut_style: calm
+  zoom: false
+  energy: medium
+cta:
+  enabled: true
+  position: end
+  default_text: ""
+ideal_duration:
+  instagram: { min_s: 30, max_s: 60 }
+  tiktok:    { min_s: 30, max_s: 90 }
+  shorts:    { min_s: 30, max_s: 60 }
+  linkedin:  { min_s: 45, max_s: 120 }
+target_metrics:
+  retention: 0.50

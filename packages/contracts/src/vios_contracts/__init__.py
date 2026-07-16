@@ -1,11 +1,45 @@
 """VIOS shared contracts.
 
-M1: Timeline IR completa (contrato central). ClientProfile/Playbook/MediaIntelligence
-siguen como stubs hasta M2/M4.
+M1: Timeline IR (contrato central). M2: ClientProfile (ficha A-H) + Playbook.
+MediaIntelligence sigue stub hasta M4.
 """
-from .client_profile import ClientProfile
+from .client_profile import CTA as ClientCTA
+from .client_profile import (
+    Asset,
+    Audience,
+    Blacklist,
+    ClientProfile,
+    ColorToken,
+    Commercial,
+    EditRules,
+    FontRef,
+    Identity,
+    Learning,
+    Library,
+    LogoRef,
+    MusicRules,
+    Pacing,
+    Person,
+    Target,
+    VisualIdentity,
+    Voice,
+    client_missing_blocks,
+    is_client_editable,
+)
+from .client_profile import SubtitleStyle as ClientSubtitleStyle
 from .media_intelligence import MediaIntelligence
-from .playbook import Playbook
+from .playbook import (
+    Beat,
+    CTAPolicy,
+    DurationRange,
+    HookSpec,
+    MusicPolicy,
+    PacingPolicy,
+    Playbook,
+    PlaybookValidationError,
+    SubtitlePolicy,
+    validate_playbook,
+)
 from .timeline_draft import TimelineDraft
 from .timeline_ir import (
     SCHEMA_VERSION,
@@ -31,26 +65,19 @@ from .timeline_ops import (
 )
 
 __all__ = [
-    "SCHEMA_VERSION",
-    "Canvas",
-    "Change",
-    "Clip",
-    "ClientProfile",
-    "Decision",
-    "Effect",
-    "Marker",
+    # timeline
+    "SCHEMA_VERSION", "Canvas", "Change", "Clip", "Decision", "Effect", "Marker",
+    "Meta", "TimelineDraft", "TimelineIR", "TimelineValidationError", "Track",
+    "Transform", "create_timeline", "diff", "export_json_schema", "from_json",
+    "to_json", "validate",
+    # client profile (A-H)
+    "Asset", "Audience", "Blacklist", "ClientCTA", "ClientProfile", "ClientSubtitleStyle",
+    "ColorToken", "Commercial", "EditRules", "FontRef", "Identity", "Learning",
+    "Library", "LogoRef", "MusicRules", "Pacing", "Person", "Target", "Voice",
+    "VisualIdentity", "client_missing_blocks", "is_client_editable",
+    # playbook
+    "Beat", "CTAPolicy", "DurationRange", "HookSpec", "MusicPolicy", "PacingPolicy",
+    "Playbook", "PlaybookValidationError", "SubtitlePolicy", "validate_playbook",
+    # media intelligence (stub)
     "MediaIntelligence",
-    "Meta",
-    "Playbook",
-    "TimelineDraft",
-    "TimelineIR",
-    "TimelineValidationError",
-    "Track",
-    "Transform",
-    "create_timeline",
-    "diff",
-    "export_json_schema",
-    "from_json",
-    "to_json",
-    "validate",
 ]

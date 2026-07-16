@@ -1,0 +1,115 @@
+# Cliente semilla — Cliender (interno). Branding 100% del brand guide oficial:
+# 06. RECURSOS CLIENDER/02. RECURSOS DE MARCA CLIENDER/01. IDENTIDAD DE MARCA CLIENDER/CLIENDER_BRAND_GUIDE_CLAUDE.md
+# Fuente diseño: Teresa Redon Studio (Sept 2023). Cero valores inventados.
+schema_version: "1.0.0"
+client_id: cliender
+name: Cliender
+
+identity:                      # A
+  name: Cliender
+  slug: cliender
+  legal_name: "HBD Revolution SL"
+  sector: "Software de gestion para pequenos negocios"
+  location: "Sagunto, Valencia"
+  web: "cliender.com"
+  socials: {}                  # handles exactos no verificados en brand guide -> pendiente, no se inventan
+  description:                 # copy oficial del brand guide (no redactado por IA)
+    - "Un software que no solo maneja tu contabilidad y citas, sino que se convierte en tu propio equipo de marketing digital."
+    - "Mas que un simple software de gestion para pequenos negocios: es tu llave al mundo digital."
+    - "Tagline: Digitaliza, gestiona, crece."
+
+visual:                        # B — HEX exactos del brand guide
+  palette:
+    - { name: "Morado Cliender", hex: "#8F7EE9", role: "primary" }
+    - { name: "Navy oscuro",     hex: "#1E2839", role: "secondary" }
+    - { name: "Negro profundo",  hex: "#14181E", role: "text" }
+    - { name: "Cream / beige",   hex: "#EBEAE4", role: "bg" }
+    - { name: "Blanco",          hex: "#FFFFFF", role: "bg" }
+  fonts:
+    - { family: "Manrope",      usage: "titulos", weights: ["500","600","700","800"], license: "Google Fonts" }
+    - { family: "Inconsolata",  usage: "cuerpo",  weights: ["400","500","700"],        license: "Google Fonts" }
+  logos:
+    - { name: "Logo1Purple", file: "Logos/Web (screen use)/SVG/Logo1Purple.svg", usage: "fondo claro (uso mas frecuente)" }
+    - { name: "Logo1White",  file: "Logos/Web (screen use)/SVG/Logo1White.svg",  usage: "fondo oscuro" }
+    - { name: "Logo5a1",     file: "Logos/Web (screen use)/PNG/Logo5a1.png",     usage: "avatar redes (circulo morado)" }
+    - { name: "Logo5c1",     file: "Logos/Web (screen use)/PNG/Logo5c1.png",     usage: "avatar redes (circulo oscuro)" }
+  subtitle_style:              # derivado de las reglas de color de marca (base blanco, enfasis morado)
+    font: "Manrope"
+    size_rel: 1.0
+    color_base: "#FFFFFF"
+    color_emphasis: "#8F7EE9"
+    position: "bottom"
+    uppercase: false
+    emojis: false
+  intro_outro:
+    exists: false
+    mandatory: false
+  moodboard:
+    likes:
+      - "Images/Applications/Cliender_Applicaion5.jpg (redes sociales)"
+      - "Images/Banners/Cliender_Banner1.jpg"
+    dislikes: []
+
+voice:                         # C
+  tone: ["cercano", "amable", "moderno", "simple", "experto accesible"]
+  treatment: "tu"
+  languages: ["es-ES"]
+  approved_phrases: ["Digitaliza, gestiona, crece."]
+  blacklist:
+    words: []
+    topics: []
+    competitors: []
+    claims: ["GHL", "GoHighLevel"]   # regla Cliender: nunca mencionar GHL en material cliente
+  verified_data:
+    - "Diseno de marca: Teresa Redon Studio (Sept 2023)"
+
+audience:                      # D
+  target:
+    age: "25-55"
+    profile: "Duenos de pequenos negocios y autonomos"
+    pain: "Gestionar el negocio y el marketing digital sin equipo ni tiempo"
+    scroll_stopper: "Promesa de simplificar lo digital"
+  default_goal: "leads"
+  cta:
+    text: "Digitaliza, gestiona, crece."
+    destination: "cliender.com"
+  platforms: ["instagram", "tiktok", "linkedin", "shorts"]
+
+edit_rules:                    # E
+  authorized_playbooks: ["reel-educativo", "podcast-clips"]
+  default_playbook: "reel-educativo"
+  durations:
+    reel: "20-45s"
+  pacing:
+    aggressive_cuts: false
+    zooms: true
+    trend_aesthetic: false
+  music:
+    style: "beat sutil moderno"
+    library: []
+    volume_rel: 0.8
+  never_do:
+    - "Usar colores fuera de la paleta de 5"
+    - "Rotar o deformar el logo, anadir sombras/efectos"
+    - "Escribir cliender en minusculas en el wordmark"
+    - "Mencionar GHL (usar 'Plataforma CLIENDER')"
+    - "Mostrar precios en material de cliente"
+  authorized_people: []
+
+library:                       # F (presente aunque corta)
+  broll: []
+  brand_photos:
+    - { url: "Images/Applications/Cliender_Applicaion1.jpg", description: "App icon mockup" }
+    - { url: "Images/Banners/Cliender_Banner1.jpg", description: "Banner perfil + cover" }
+  prior_approved: []
+  prior_rejected: []
+  music_sfx: []
+
+commercial:                    # G (opcional)
+  services: ["Software de gestion", "Marketing digital automatizado"]
+  active_offers: []
+  competitors: []
+  account_manager: ""
+  approval_channel: ""
+
+learning: {}                   # H (se rellena con el uso)
