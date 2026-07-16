@@ -1,0 +1,75 @@
+{
+  "canvas": {
+    "aspect": "9:16",
+    "height": 1920,
+    "width": 1080
+  },
+  "fps": 30,
+  "id_seq": {
+    "c": 1,
+    "m": 3,
+    "v": 1
+  },
+  "markers": [
+    {
+      "at": 0,
+      "id": "m0",
+      "kind": "beat",
+      "label": "entrada",
+      "payload": {}
+    },
+    {
+      "at": 450,
+      "id": "m1",
+      "kind": "beat",
+      "label": "punchline",
+      "payload": {}
+    },
+    {
+      "at": 840,
+      "id": "m2",
+      "kind": "cta",
+      "label": "sigue el canal",
+      "payload": {}
+    }
+  ],
+  "meta": {
+    "decisions": [
+      {
+        "action": "",
+        "agent": "story-agent",
+        "revision": 1,
+        "why": "Clip de podcast: mejor momento + beats"
+      }
+    ],
+    "platform": "instagram",
+    "playbook": "reel-educativo"
+  },
+  "parent_revision": 0,
+  "project_id": "proj-1",
+  "revision": 1,
+  "schema_version": "1.0.0",
+  "tracks": [
+    {
+      "clips": [
+        {
+          "effects": [],
+          "id": "c0",
+          "in_point": 1200,
+          "out_point": 2100,
+          "source": "pod-1",
+          "start": 0,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "id": "v0",
+      "kind": "video"
+    }
+  ]
+}

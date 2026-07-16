@@ -1,0 +1,104 @@
+{
+  "canvas": {
+    "aspect": "9:16",
+    "height": 1920,
+    "width": 1080
+  },
+  "fps": 30,
+  "id_seq": {
+    "a": 1,
+    "c": 4,
+    "g": 1
+  },
+  "markers": [],
+  "meta": {
+    "decisions": [
+      {
+        "action": "",
+        "agent": "visual-agent",
+        "revision": 1,
+        "why": "Carrusel-video: 3 slides + musica"
+      }
+    ],
+    "platform": "instagram",
+    "playbook": "reel-educativo"
+  },
+  "parent_revision": 0,
+  "project_id": "proj-1",
+  "revision": 1,
+  "schema_version": "1.0.0",
+  "tracks": [
+    {
+      "clips": [
+        {
+          "effects": [],
+          "id": "c0",
+          "in_point": 0,
+          "out_point": 60,
+          "source": "slide-0",
+          "start": 0,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "effects": [],
+          "id": "c1",
+          "in_point": 0,
+          "out_point": 60,
+          "source": "slide-1",
+          "start": 60,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "effects": [],
+          "id": "c2",
+          "in_point": 0,
+          "out_point": 60,
+          "source": "slide-2",
+          "start": 120,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "id": "g0",
+      "kind": "graphic"
+    },
+    {
+      "clips": [
+        {
+          "effects": [],
+          "id": "c3",
+          "in_point": 0,
+          "out_point": 180,
+          "source": "music-1",
+          "start": 0,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "id": "a0",
+      "kind": "audio"
+    }
+  ]
+}

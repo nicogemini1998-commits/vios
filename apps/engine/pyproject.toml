@@ -27,6 +27,11 @@ vios-contracts = { path = "../../packages/contracts", editable = true }
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[dependency-groups]
+dev = [
+    "pytest-cov>=7.1.0",
+]
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/vios_engine"]
 

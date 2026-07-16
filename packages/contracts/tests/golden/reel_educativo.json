@@ -1,0 +1,98 @@
+{
+  "canvas": {
+    "aspect": "9:16",
+    "height": 1920,
+    "width": 1080
+  },
+  "fps": 30,
+  "id_seq": {
+    "c": 3,
+    "m": 1,
+    "s": 1,
+    "v": 1
+  },
+  "markers": [
+    {
+      "at": 0,
+      "id": "m0",
+      "kind": "hook",
+      "label": "Hook 0-1.5s",
+      "payload": {}
+    }
+  ],
+  "meta": {
+    "decisions": [
+      {
+        "action": "",
+        "agent": "edit-agent",
+        "revision": 1,
+        "why": "Reel v1: 2 cortes + subs + hook"
+      }
+    ],
+    "platform": "instagram",
+    "playbook": "reel-educativo"
+  },
+  "parent_revision": 0,
+  "project_id": "proj-1",
+  "revision": 1,
+  "schema_version": "1.0.0",
+  "tracks": [
+    {
+      "clips": [
+        {
+          "effects": [],
+          "id": "c0",
+          "in_point": 0,
+          "out_point": 90,
+          "source": "asset-a",
+          "start": 0,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "effects": [],
+          "id": "c1",
+          "in_point": 300,
+          "out_point": 450,
+          "source": "asset-a",
+          "start": 90,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "id": "v0",
+      "kind": "video"
+    },
+    {
+      "clips": [
+        {
+          "effects": [],
+          "id": "c2",
+          "in_point": 0,
+          "out_point": 90,
+          "source": "Hola, esto es un reel",
+          "start": 0,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "id": "s0",
+      "kind": "subtitle"
+    }
+  ]
+}
