@@ -20,7 +20,8 @@ from vios_engine.pipeline import (
 
 def test_default_graph_order():
     g = vios_default_graph()
-    assert g.order == ["ingest", "director", "story", "edit", "subtitle", "branding"]
+    assert g.order == ["ingest", "director", "story", "edit", "subtitle", "branding",
+                       "visual", "audio"]
 
 
 def test_graph_cycle_detected():
@@ -80,7 +81,7 @@ async def test_happy_path_runs_all_phases_in_order():
     job = await engine.run(ctx)
     assert job.status == "done"
     assert seen == graph.order
-    assert job.tokens_spent == 60
+    assert job.tokens_spent == 80
     assert all(p.status == "done" for p in job.phases.values())
 
 

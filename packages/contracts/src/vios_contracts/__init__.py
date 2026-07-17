@@ -36,7 +36,13 @@ from .edit_plan import (
     SelectedMoment,
     validate_edit_plan,
 )
-from .effects import EFFECT_LOGO_OVERLAY, EFFECT_SUBTITLE_STYLE, KNOWN_EFFECTS
+from .effects import (
+    EFFECT_LOGO_OVERLAY,
+    EFFECT_MUSIC_MIX,
+    EFFECT_SUBTITLE_STYLE,
+    EFFECT_ZOOM,
+    KNOWN_EFFECTS,
+)
 from .media_intelligence import (
     EnergyPoint,
     Keyframe,
@@ -83,6 +89,7 @@ from .timeline_ops import (
     from_json,
     s_to_frames,
     source_frame_to_timeline,
+    timeline_end,
     to_json,
     validate,
 )
@@ -92,7 +99,8 @@ __all__ = [
     "SCHEMA_VERSION", "Canvas", "Change", "Clip", "Decision", "Effect", "Marker",
     "Meta", "TimelineDraft", "TimelineIR", "TimelineValidationError", "Track",
     "Transform", "create_timeline", "diff", "export_json_schema", "frames_to_s",
-    "from_json", "s_to_frames", "source_frame_to_timeline", "to_json", "validate",
+    "from_json", "s_to_frames", "source_frame_to_timeline", "timeline_end",
+    "to_json", "validate",
     # client profile (A-H)
     "Asset", "Audience", "Blacklist", "ClientCTA", "ClientProfile", "ClientSubtitleStyle",
     "ColorToken", "Commercial", "EditRules", "FontRef", "Identity", "Learning",
@@ -105,7 +113,8 @@ __all__ = [
     "EditPlan", "EditPlanValidationError", "HookCandidate", "PlannedBeat",
     "SelectedMoment", "validate_edit_plan",
     # effects (F4)
-    "EFFECT_LOGO_OVERLAY", "EFFECT_SUBTITLE_STYLE", "KNOWN_EFFECTS",
+    "EFFECT_LOGO_OVERLAY", "EFFECT_MUSIC_MIX", "EFFECT_SUBTITLE_STYLE",
+    "EFFECT_ZOOM", "KNOWN_EFFECTS",
     # media intelligence (M4)
     "MediaIntelligence", "Transcript", "Segment", "Word", "Scene", "Silence",
     "EnergyPoint", "Keyframe", "QualityScore",

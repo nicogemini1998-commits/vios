@@ -81,6 +81,12 @@ def source_frame_to_timeline(ir: TimelineIR, asset_id: str, source_frame: int) -
     return None
 
 
+def timeline_end(ir: TimelineIR) -> int:
+    """Último frame ocupado por cualquier clip (0 si la timeline está vacía)."""
+    ends = [c.start + (c.out_point - c.in_point) for t in ir.tracks for c in t.clips]
+    return max(ends, default=0)
+
+
 class Change(BaseModel):
     op: str            # add | remove | modify
     path: str          # ej. tracks/v0, tracks/v0/clips/c0, markers/m0

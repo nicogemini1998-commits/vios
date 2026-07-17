@@ -15,6 +15,7 @@ from vios_contracts import (
     TimelineDraft,
     TimelineIR,
     s_to_frames,
+    timeline_end,
 )
 
 from .layout import LOGO_CORNER_DEFAULT, LOGO_MARGIN_REL
@@ -37,7 +38,7 @@ class BrandingAgent:
         notes: list[str] = []
 
         outro_frames = self._resolve_outro_frames(ir, profile, intel_by_asset, notes)
-        end = _timeline_end(ir)
+        end = timeline_end(ir)
         if outro_frames:
             video_track = next((t for t in ir.tracks if t.kind == "video"), None)
             if video_track is None:
@@ -101,9 +102,3 @@ class BrandingAgent:
             notes.append(f"intro/outro '{io.file}' sin análisis: omitido")
             return 0
         return s_to_frames(duration_s, ir.fps)
-
-
-def _timeline_end(ir: TimelineIR) -> int:
-    """Último frame ocupado por cualquier clip de la timeline."""
-    ends = [c.start + (c.out_point - c.in_point) for t in ir.tracks for c in t.clips]
-    return max(ends, default=0)

@@ -68,6 +68,7 @@ def test_t1_analyze_populated():
     assert mi.transcript.segments and mi.scenes and mi.silences
     assert mi.energy and mi.keyframes
     assert mi.duration_s == 10.0 and mi.fps == 30.0
+    assert (mi.width, mi.height) == (1080, 1920)   # dims del ffprobe → base reframe M9
     assert mi.quality.audio_ok is True
 
 

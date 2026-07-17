@@ -106,6 +106,8 @@ def analyze_asset(
         source_hash=asset.hash,
         duration_s=asset.meta.duration_s,
         fps=asset.meta.fps,
+        width=asset.meta.width,
+        height=asset.meta.height,
         transcript=transcript,
         scenes=scenes,
         silences=silences,

@@ -70,6 +70,8 @@ class MediaIntelligence(_Model):
     source_hash: str
     duration_s: float | None = None
     fps: float | None = None
+    width: int | None = None      # dims del source (ffprobe M3) — base del reframe M9
+    height: int | None = None
     transcript: Transcript = Field(default_factory=Transcript)
     scenes: list[Scene] = Field(default_factory=list)
     silences: list[Silence] = Field(default_factory=list)

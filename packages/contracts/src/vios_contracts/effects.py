@@ -13,4 +13,14 @@ EFFECT_SUBTITLE_STYLE = "subtitle_style"
 # params: file, corner, margin_rel.
 EFFECT_LOGO_OVERLAY = "logo_overlay"
 
-KNOWN_EFFECTS = frozenset({EFFECT_SUBTITLE_STYLE, EFFECT_LOGO_OVERLAY})
+# Zoom de ritmo aplicado por el VisualMotionAgent a clips de vídeo (M9).
+# params: scale_from, scale_to.
+EFFECT_ZOOM = "zoom"
+
+# Mezcla de música aplicada por el AudioMusicAgent al clip de música (M9).
+# params: volume_rel, target_lufs, ducking (bool), duck_ranges ([{start, end}] en frames).
+EFFECT_MUSIC_MIX = "music_mix"
+
+KNOWN_EFFECTS = frozenset({
+    EFFECT_SUBTITLE_STYLE, EFFECT_LOGO_OVERLAY, EFFECT_ZOOM, EFFECT_MUSIC_MIX,
+})

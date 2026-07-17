@@ -284,9 +284,14 @@ def test_edit_agent_requires_moments():
 # --- Golden brief e2e (F3 completo con FakeLLM) ---
 
 async def test_golden_brief_pipeline_bruto_a_timeline():
-    """El hito F3+F4: brief + intelligence → EditPlan → IR editada+subtitulada+brandeada."""
-    from vios_contracts import ClientSubtitleStyle, LogoRef, SubtitlePolicy, VisualIdentity
-    from vios_engine.agents import BrandingAgent, SubtitleAgent
+    """El hito F3+F4: brief + intelligence → EditPlan → IR con las 4 capas de producción."""
+    from vios_contracts import (
+        Asset, ClientSubtitleStyle, EditRules, Library, LogoRef,
+        MusicPolicy, MusicRules, SubtitlePolicy, VisualIdentity,
+    )
+    from vios_engine.agents import (
+        AudioMusicAgent, BrandingAgent, SubtitleAgent, VisualMotionAgent,
+    )
     from vios_engine.pipeline import (
         InMemoryCheckpointStore, JobState, PhaseResult, PipelineContext,
         PipelineEngine, TokenBudget, vios_default_graph,
@@ -294,19 +299,27 @@ async def test_golden_brief_pipeline_bruto_a_timeline():
 
     playbook = make_playbook().model_copy(update={
         "subtitles": SubtitlePolicy(enabled=True, karaoke=False),
+        "music": MusicPolicy(enabled=True, ducking=True),
     })
     client = make_client().model_copy(update={
         "visual": VisualIdentity(
             logos=[LogoRef(name="logo1b", file="logo1b.png")],
             subtitle_style=ClientSubtitleStyle(font="Inter", color_base="#FFFFFF"),
         ),
+        "edit_rules": EditRules(music=MusicRules(volume_rel=0.7)),
+        "library": Library(music_sfx=[Asset(url="music-1.mp3")]),
     })
     intel = make_intelligence()
+    intel["a1"] = intel["a1"].model_copy(update={"width": 1920, "height": 1080})
+    intel["music-1.mp3"] = MediaIntelligence(asset_id="music-1.mp3",
+                                             source_hash="hm", duration_s=45.0)
     director = DirectorAgent(FakeLLM([DIRECTOR_JSON]))
     story = StoryAgent(FakeLLM([STORY_JSON]))
     editor = EditAgent(fps=30)
     subtitler = SubtitleAgent()
     brander = BrandingAgent()
+    visualist = VisualMotionAgent()
+    musician = AudioMusicAgent()
 
     async def h_ingest(ctx):
         return PhaseResult(output=intel)
@@ -334,12 +347,21 @@ async def test_golden_brief_pipeline_bruto_a_timeline():
                                     intel_by_asset=ctx.outputs["ingest"])
         return PhaseResult(output=ir, ir=ir)
 
+    async def h_visual(ctx):
+        ir = visualist.apply_motion(ctx.ir, ctx.outputs["ingest"], playbook, client)
+        return PhaseResult(output=ir, ir=ir)
+
+    async def h_audio(ctx):
+        ir = musician.apply_music(ctx.ir, ctx.outputs["ingest"], playbook, client)
+        return PhaseResult(output=ir, ir=ir)
+
     graph = vios_default_graph()
     store = InMemoryCheckpointStore()
     engine = PipelineEngine(
         graph,
         {"ingest": h_ingest, "director": h_director, "story": h_story,
-         "edit": h_edit, "subtitle": h_subtitle, "branding": h_branding},
+         "edit": h_edit, "subtitle": h_subtitle, "branding": h_branding,
+         "visual": h_visual, "audio": h_audio},
         store,
     )
     ctx = PipelineContext(job=JobState.new("j1", "p1", graph.order),
@@ -357,13 +379,21 @@ async def test_golden_brief_pipeline_bruto_a_timeline():
     total_s = total_frames / ir.fps
     rng = playbook.ideal_duration["instagram"]
     assert rng.min_s <= total_s <= rng.max_s
-    # capas F4: subtitulada (texto literal) y brandeada, una revisión por fase
-    assert ir.revision == 3
+    # capas F4 completas: subtítulos, branding, motion y música — una revisión por fase
+    assert ir.revision == 5
     subs = next(t for t in ir.tracks if t.kind == "subtitle")
     assert subs.clips[0].source == "¿Sabías que el 80% falla?"
     graphic = next(t for t in ir.tracks if t.kind == "graphic")
     assert graphic.clips[0].source == "logo1b.png"
+    # visual: bruto 16:9 reencuadrado al canvas 9:16
+    assert video.clips[0].transform.scale > 1.7
+    # audio: música real de la biblioteca con mix
+    music_track = [t for t in ir.tracks if t.kind == "audio"][-1]
+    assert music_track.clips[0].source == "music-1.mp3"
+    mix = next(e for e in music_track.clips[0].effects if e.type == "music_mix")
+    assert mix.params["volume_rel"] == 0.7 and mix.params["duck_ranges"]
     agents = [d.agent for d in ir.meta.decisions]
-    assert agents == ["edit-agent", "subtitle-agent", "branding-agent"]
+    assert agents == ["edit-agent", "subtitle-agent", "branding-agent",
+                      "visual-agent", "audio-agent"]
     # checkpoint IR persistido por cada fase que produce timeline
-    assert len(store.saved) == 3
+    assert len(store.saved) == 5
