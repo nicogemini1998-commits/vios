@@ -31,6 +31,7 @@ class BRollAgent:
         intel_by_asset: dict[str, MediaIntelligence],
         playbook: Playbook,
         profile: ClientProfile,
+        constraints=None,
     ) -> TimelineIR:
         """Inserta b-roll en los valles como nueva revisión auditada de la IR."""
         draft = TimelineDraft.from_ir(ir)
@@ -40,18 +41,22 @@ class BRollAgent:
                                 why="sin b-roll en la biblioteca del cliente",
                                 action="skip")
 
-        usable, discarded = [], []
+        banned = constraints.banned_assets if constraints else set()
+        usable, discarded, vetoed = [], [], []
         for asset in assets:
+            if asset.url in banned:
+                vetoed.append(asset.url)
+                continue
             intel = intel_by_asset.get(asset.url)
             if intel is None or intel.duration_s is None:
                 discarded.append(asset.url)
             else:
                 usable.append((asset, intel))
         if not usable:
-            return draft.commit(
-                by=AGENT_NAME,
-                why=f"b-roll sin análisis (duración desconocida): {discarded}",
-                action="skip")
+            why = f"b-roll sin análisis (duración desconocida): {discarded}"
+            if vetoed:
+                why += f"; vetados por QA: {vetoed}"
+            return draft.commit(by=AGENT_NAME, why=why, action="skip")
 
         valleys = self._valleys(ir, intel_by_asset, playbook)
         if not valleys:
@@ -61,6 +66,8 @@ class BRollAgent:
             return draft.commit(by=AGENT_NAME, why=why, action="skip")
 
         notes: list[str] = []
+        if vetoed:
+            notes.append(f"vetados por QA: {vetoed}")
         if discarded:
             notes.append(f"sin análisis (descartados): {discarded}")
         track_id = draft.add_track("video")

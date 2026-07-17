@@ -303,6 +303,8 @@ async def test_golden_brief_pipeline_bruto_a_timeline(tmp_path):
         BrandingAgent,
         BRollAgent,
         CTAThumbnailAgent,
+        QAAgent,
+        QALoop,
         SubtitleAgent,
         VisualMotionAgent,
     )
@@ -396,6 +398,15 @@ async def test_golden_brief_pipeline_bruto_a_timeline(tmp_path):
         ir = ctaist.apply_cta(ctx.ir, playbook, client)
         return PhaseResult(output=ir, ir=ir)
 
+    async def h_qa(ctx):
+        from .make_golden_rev7 import run_f4
+
+        loop = QALoop(QAAgent(), rebuild=lambda c: run_f4(
+            ctx.outputs["edit"], intel, playbook, client, constraints=c))
+        ir_qa, report, passes = loop.run(ctx.ir, intel, playbook, client)
+        return PhaseResult(output={"passes": passes, "warns": len(report.warns)},
+                           ir=ir_qa)
+
     renderer = RenderService(InMemoryRenderRepo(), FakeFfmpegRunner(),
                              RenderQueue(2, 1), tmp_path, timeout_s=5.0)
     asset_paths = {"a1": "/assets/a1", "music-1.mp3": "/assets/music-1.mp3",
@@ -416,7 +427,7 @@ async def test_golden_brief_pipeline_bruto_a_timeline(tmp_path):
         {"ingest": h_ingest, "director": h_director, "story": h_story,
          "edit": h_edit, "subtitle": h_subtitle, "branding": h_branding,
          "visual": h_visual, "audio": h_audio, "broll": h_broll, "cta": h_cta,
-         "render": h_render},
+         "qa": h_qa, "render": h_render},
         store,
     )
     ctx = PipelineContext(job=JobState.new("j1", "p1", graph.order),
@@ -434,8 +445,8 @@ async def test_golden_brief_pipeline_bruto_a_timeline(tmp_path):
     total_s = total_frames / ir.fps
     rng = playbook.ideal_duration["instagram"]
     assert rng.min_s <= total_s <= rng.max_s
-    # capas F4 completas: 6 capas — una revisión por fase
-    assert ir.revision == 7
+    # capas F4 (6) + revisión de QA — una revisión auditada por fase
+    assert ir.revision == 8
     subs = next(t for t in ir.tracks if t.kind == "subtitle")
     assert subs.clips[0].source == "¿Sabías que el 80% falla?"
     graphic = next(t for t in ir.tracks if t.kind == "graphic")
@@ -453,10 +464,14 @@ async def test_golden_brief_pipeline_bruto_a_timeline(tmp_path):
     assert any(m.kind == "thumbnail" for m in ir.markers)
     agents = [d.agent for d in ir.meta.decisions]
     assert agents == ["edit-agent", "subtitle-agent", "branding-agent",
-                      "visual-agent", "audio-agent", "broll-agent", "cta-agent"]
+                      "visual-agent", "audio-agent", "broll-agent", "cta-agent",
+                      "qa-agent"]
+    # qa: pass sin re-pasadas, con la Decision auditada
+    assert ctx.outputs["qa"]["passes"] == 0
+    assert "qa: pass" in ir.meta.decisions[-1].why
     # checkpoint IR persistido por cada fase que produce timeline
-    assert len(store.saved) == 7
-    # render (F5): preview producida SIN nueva revisión — el render no edita
+    assert len(store.saved) == 8
+    # render (F5): preview de la rev aprobada por QA, SIN nueva revisión
     assert ctx.outputs["render"]["status"] == "done"
-    assert ctx.outputs["render"]["url"].endswith(".mp4")
-    assert ir.revision == 7
+    assert "-r8-" in ctx.outputs["render"]["render_id"]
+    assert ir.revision == 8

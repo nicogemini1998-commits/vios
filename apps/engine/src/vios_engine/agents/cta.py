@@ -32,6 +32,7 @@ class CTAThumbnailAgent:
         ir: TimelineIR,
         playbook: Playbook,
         profile: ClientProfile,
+        constraints=None,
     ) -> TimelineIR:
         """Añade CTA + thumbnail como nueva revisión auditada de la IR."""
         draft = TimelineDraft.from_ir(ir)
@@ -40,7 +41,11 @@ class CTAThumbnailAgent:
             return draft.commit(by=AGENT_NAME, why="timeline vacía", action="skip")
 
         notes: list[str] = []
-        did_cta = self._cta_overlay(ir, playbook, profile, draft, end, notes)
+        if constraints and constraints.drop_cta:
+            notes.append("CTA vetado por QA: omitido")
+            did_cta = False
+        else:
+            did_cta = self._cta_overlay(ir, playbook, profile, draft, end, notes)
         did_thumb = self._thumbnail(ir, draft, notes)
         return draft.commit(
             by=AGENT_NAME,

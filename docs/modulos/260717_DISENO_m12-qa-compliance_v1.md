@@ -1,6 +1,6 @@
 # M12 · F5 Render + QA — QA/Compliance Agent + loop de corrección acotado (v1)
 
-> VIOS · 2026-07-17 · KAREN (Fable 5) · Estado: **BORRADOR — pendiente validación de Nico ANTES de codear** (directiva F5+)
+> VIOS · 2026-07-17 · KAREN (Fable 5) · Estado: **CERRADO** (aprobado por Nico con P1/P2/P3 respondidas; cierre en §12)
 > Último módulo antes del **HITO MVP** (bruto real → reel publicable, validar con Toni). M12 es el guardián automático de las reglas del manual §2 sobre la IR final, ANTES de gastar ffmpeg y ANTES de la puerta humana.
 
 ## 1. Objetivo
@@ -60,5 +60,12 @@ Engine (~18): Q1 asset no trazable → block+fix DROP · Q2 subtítulo parafrase
 - Matching semántico de claims (parafraseo) → post-MVP, con LLM presupuestado.
 - Tras M12: **HITO MVP** — bruto real de cliente Cliender → preview → validación de Toni/equipo media ANTES de F6.
 
-## 12. Cierre
-_(se rellena al cerrar el módulo, tras tu OK)_
+## 12. Cierre (como quedó implementado — 2026-07-17, tras aprobación con P1=SÍ, P2=SÍ, P3=CONFIRMADO)
+- `agents/qa.py`: `QAAgent.review` (Q1–Q10 con evidencia + responsable + fix), `apply_verdict` (revisión `qa: pass (N warns)` SIEMPRE, también sin fixes — P2), `QAConstraints`, `constraints_from` (None si algún block no tiene fix), `QALoop` (máx `QA_MAX_LOOPS=2`, `rebuild` lo aporta el caller — P1, el PipelineEngine no se tocó) y `QABlocked` (informe completo al humano, estilo NEEDS_INPUT).
+- Los 4 agentes F4 con salida vetable ganaron `constraints=None` (subtitle/audio/broll/cta): QUITAN lo vetado anotando "vetado por QA" — el QA jamás parchea (P3). Re-pasadas registradas en el output de la fase (`{"passes": N}`) y en la Decision (trazabilidad, nota P1).
+- Normalización léxica compartida (`normalize`: minúsculas, sin acentos NFD, espacios colapsados) para Q2/Q4/Q5/Q10. Q5 detecta GHL (3 variantes) y precios (regex €/eur/euros) — block SIN fix, decide el humano (tensión Q2↔Q5 resuelta como validaste).
+- Grafo **12 fases** (`…→cta→qa→render`): QA antes de quemar ffmpeg; golden e2e = **revisión 8**, 8 checkpoints, decisiones …→cta→qa, y el render produce `p1-r8-preview-instagram` (renderiza la rev aprobada).
+- Fixtures del e2e extraídas a `make_golden_rev7.make_fixtures()`/`run_f4()` — el loop de QA de producción y los tests comparten la misma cadena F4.
+- Tests: engine 127→147 local (20 nuevos M12) / 149 contenedor · contracts 50 · ruff limpio. Verificado el ciclo completo: ficha cambiada tras editar → Q3 block → DROP_CTA → re-pasada 1 → pass (el agente repone/omite, el QA no toca contenido).
+- Anotado para M6 futuro (aporte Nico, NO implementado): Story Agent evitando seleccionar momentos con GHL/precio en origen.
+- **F5 COMPLETA (13/14 módulos). Siguiente: HITO MVP — bruto real → preview → puerta humana (Toni/equipo media) ANTES de F6 (M13 MCP + M14 Publishing).**

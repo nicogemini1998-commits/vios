@@ -25,6 +25,7 @@ from vios_contracts.client_profile import SubtitleStyle
 from vios_contracts.timeline_ir import Clip
 
 from .layout import SUBTITLE_MAX_LINE_CHARS, SUBTITLE_POSITION_DEFAULT
+from .qa import normalize as qa_normalize
 
 AGENT_NAME = "subtitle-agent"
 
@@ -46,6 +47,7 @@ class SubtitleAgent:
         intel_by_asset: dict[str, MediaIntelligence],
         playbook: Playbook,
         profile: ClientProfile,
+        constraints=None,
     ) -> TimelineIR:
         """Añade el track subtitle como nueva revisión auditada de la IR."""
         policy = playbook.subtitles or SubtitlePolicy()
@@ -63,9 +65,14 @@ class SubtitleAgent:
 
         style = profile.visual.subtitle_style if profile.visual else None
         uppercase = policy.uppercase or bool(style and style.uppercase)
+        banned = constraints.banned_subtitle_texts if constraints else set()
+        vetoed = 0
         low_count = 0
         tid = draft.add_track("subtitle")
         for entry, t_start in entries:
+            if banned and qa_normalize(entry.text) in banned:
+                vetoed += 1
+                continue
             duration = entry.end_f - entry.start_f
             text = entry.text.upper() if uppercase else entry.text
             cid = draft.add_clip(tid, source=text, start=t_start,
@@ -74,10 +81,12 @@ class SubtitleAgent:
             low_count += int(entry.low_confidence)
 
         mode = "karaoke" if policy.karaoke else "líneas"
+        veto_note = f", {vetoed} vetados por QA" if vetoed else ""
         return draft.commit(
             by=AGENT_NAME,
             why=f"subtítulos {mode} literales del transcript "
-                f"({len(entries)} clips, {low_count} low_confidence)",
+                f"({len(entries) - vetoed} clips, {low_count} low_confidence"
+                f"{veto_note})",
             action="add_subtitles",
         )
 

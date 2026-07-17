@@ -30,6 +30,7 @@ class AudioMusicAgent:
         intel_by_asset: dict[str, MediaIntelligence],
         playbook: Playbook,
         profile: ClientProfile,
+        constraints=None,
     ) -> TimelineIR:
         """Añade el track de música como nueva revisión auditada de la IR."""
         policy = playbook.music or MusicPolicy()
@@ -43,6 +44,11 @@ class AudioMusicAgent:
                                 why="sin música en la biblioteca del cliente",
                                 action="skip")
         music = assets[0]                       # v1: primer asset (determinista)
+        if constraints and (constraints.drop_music
+                            or music.url in constraints.banned_assets):
+            return draft.commit(by=AGENT_NAME,
+                                why=f"música '{music.url}' vetada por QA",
+                                action="skip")
         intel = intel_by_asset.get(music.url)
         duration_s = intel.duration_s if intel else None
         if duration_s is None:

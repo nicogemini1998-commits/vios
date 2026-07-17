@@ -46,7 +46,8 @@ GOLDEN = (Path(__file__).resolve().parents[3]
           / "packages" / "contracts" / "tests" / "golden" / "reel_f4_rev7.json")
 
 
-def build_rev7():
+def make_fixtures():
+    """Fixtures canónicas del e2e (reutilizadas por los tests de QA M12)."""
     playbook = Playbook(
         id="reel-educativo", name="Reel educativo",
         beats=[Beat(name="hook", rel_duration=0.1),
@@ -103,13 +104,27 @@ def build_rev7():
                              text="¿Sabías?", score=0.9)],
     )
 
-    ir = EditAgent(fps=30).build_timeline(plan, playbook)
-    ir = SubtitleAgent().add_subtitles(ir, intel, playbook, client)
+    return playbook, client, intel, plan
+
+
+def run_f4(ir_edit, intel, playbook, client, constraints=None):
+    """Cadena F4 completa sobre la IR de edit (la re-usa el loop de QA M12)."""
+    ir = SubtitleAgent().add_subtitles(ir_edit, intel, playbook, client,
+                                       constraints=constraints)
     ir = BrandingAgent().apply_branding(ir, client, playbook, intel_by_asset=intel)
     ir = VisualMotionAgent().apply_motion(ir, intel, playbook, client)
-    ir = AudioMusicAgent().apply_music(ir, intel, playbook, client)
-    ir = BRollAgent().apply_broll(ir, intel, playbook, client)
-    ir = CTAThumbnailAgent().apply_cta(ir, playbook, client)
+    ir = AudioMusicAgent().apply_music(ir, intel, playbook, client,
+                                       constraints=constraints)
+    ir = BRollAgent().apply_broll(ir, intel, playbook, client,
+                                  constraints=constraints)
+    return CTAThumbnailAgent().apply_cta(ir, playbook, client,
+                                         constraints=constraints)
+
+
+def build_rev7():
+    playbook, client, intel, plan = make_fixtures()
+    ir_edit = EditAgent(fps=30).build_timeline(plan, playbook)
+    ir = run_f4(ir_edit, intel, playbook, client)
     assert ir.revision == 7, f"esperada revisión 7, obtenida {ir.revision}"
     return ir
 

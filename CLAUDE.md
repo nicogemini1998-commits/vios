@@ -77,18 +77,17 @@ make health                   # curl al /health del engine
 
 ## Estado y próximo paso
 
-- **Completadas:** F0 Fundación (M0) · F1 Contratos (M1–M2) · F2 Ingesta (M3–M4) ·
-  F3 Cerebro (M5–M7) · F4 Capas (M8–M10) · **F5 M11 Render FFmpeg nativo**.
-  12/14 módulos. Suite verde (engine 127 local / 129 contenedor, contracts 50).
-- **M11 (decisión Nico):** render con FFMPEG NATIVO dentro del engine Python —
-  Remotion descartado (licencia comercial de terceros) y `apps/render-svc`
-  eliminado. `vios_engine/render/`: `ir_to_filtergraph` PURA con golden tests
-  (4 IRs), ducking determinista por duck_ranges con rampas (opción A),
-  cola con `RENDER_MAX_CONCURRENCY` + límite por cliente + idempotencia
-  (tabla `renders`, migración 0004), preview 480p / masters por
-  `PLATFORM_MASTERS` (dato). Fase `render` = fase 11 del grafo, NO muta la IR.
-- **Próximo: M12 · QA/Compliance Agent** + loop de corrección acotado (máx 2).
-  Tras M12: **HITO MVP** — bruto real de cliente → reel 9:16 publicable,
-  validar con Toni/equipo media ANTES de seguir a F6.
+- **Completadas:** F0–F5 — M0 · M1–M2 · M3–M4 · M5–M7 · M8–M10 · M11 Render
+  FFmpeg nativo · **M12 QA/Compliance**. 13/14 módulos. Suite verde
+  (engine 147 local / 149 contenedor, contracts 50).
+- **M12:** QAAgent determinista (Q1–Q10 del manual §2) + fixes SOLO sustractivos
+  (el QA quita, el agente repone con `QAConstraints` — jamás parchea) + `QALoop`
+  máx 2 re-pasadas dentro del handler (motor lineal D2 intacto) + `QABlocked`
+  al humano si un block no tiene fix (GHL/precios/duración). Grafo 12 fases:
+  `…→cta→qa→render`; QA aprueba con revisión propia (rev 8) y el render
+  renderiza esa.
+- **Siguiente: HITO MVP** — bruto REAL de un cliente → preview 480p → puerta
+  humana (Toni/equipo media). Validar ANTES de F6 (M13 MCP · M14 Publishing).
+  Los docs de diseño viven en `docs/modulos/` (fuente de verdad, viaja con git).
 - **Plan maestro y docs de módulos** viven en OneDrive (carpeta VIOS de Cliender), no
   en el repo. Pídeselos a Nico si necesitas el detalle de diseño.
