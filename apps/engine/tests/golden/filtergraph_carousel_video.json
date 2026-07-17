@@ -1,0 +1,58 @@
+{
+  "filter_complex": "color=c=black:s=1080x1920:r=30:d=6.000000[vbase];[0:v]fps=30,scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setpts=PTS-STARTPTS+0.000000/TB[sl0];[vbase][sl0]overlay=x=0:y=0:eof_action=pass[vsl0];[1:v]fps=30,scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setpts=PTS-STARTPTS+2.000000/TB[sl1];[vsl0][sl1]overlay=x=0:y=0:eof_action=pass[vsl1];[2:v]fps=30,scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setpts=PTS-STARTPTS+4.000000/TB[sl2];[vsl1][sl2]overlay=x=0:y=0:eof_action=pass[vsl2];[vsl2]scale=-2:480[vout];[3:a]atrim=start=0.000000:end=6.000000,asetpts=PTS-STARTPTS[va0];[va0]anull[avoice]",
+  "inputs": [
+    [
+      "-loop",
+      "1",
+      "-framerate",
+      "30",
+      "-t",
+      "2.000000",
+      "-i",
+      "/assets/slide-0"
+    ],
+    [
+      "-loop",
+      "1",
+      "-framerate",
+      "30",
+      "-t",
+      "2.000000",
+      "-i",
+      "/assets/slide-1"
+    ],
+    [
+      "-loop",
+      "1",
+      "-framerate",
+      "30",
+      "-t",
+      "2.000000",
+      "-i",
+      "/assets/slide-2"
+    ],
+    [
+      "-i",
+      "/assets/music-1"
+    ]
+  ],
+  "output_args": [
+    "-map",
+    "[vout]",
+    "-map",
+    "[avoice]",
+    "-c:v",
+    "libx264",
+    "-preset",
+    "veryfast",
+    "-crf",
+    "28",
+    "-pix_fmt",
+    "yuv420p",
+    "-c:a",
+    "aac",
+    "-b:a",
+    "128k"
+  ],
+  "has_ass": false
+}

@@ -1,0 +1,424 @@
+{
+  "canvas": {
+    "aspect": "9:16",
+    "height": 1920,
+    "width": 1080
+  },
+  "fps": 30,
+  "id_seq": {
+    "a": 2,
+    "c": 12,
+    "g": 2,
+    "m": 6,
+    "s": 1,
+    "v": 1
+  },
+  "markers": [
+    {
+      "at": 0,
+      "id": "m0",
+      "kind": "beat",
+      "label": "hook",
+      "payload": {
+        "order": 0,
+        "why": "gancho"
+      }
+    },
+    {
+      "at": 90,
+      "id": "m1",
+      "kind": "beat",
+      "label": "desarrollo",
+      "payload": {
+        "order": 1,
+        "why": "núcleo"
+      }
+    },
+    {
+      "at": 750,
+      "id": "m2",
+      "kind": "beat",
+      "label": "cta",
+      "payload": {
+        "order": 2,
+        "why": "cierre"
+      }
+    },
+    {
+      "at": 0,
+      "id": "m3",
+      "kind": "hook",
+      "label": "¿Sabías?",
+      "payload": {
+        "asset_id": "a1",
+        "end_s": 13.0,
+        "score": 0.9,
+        "start_s": 10.0
+      }
+    },
+    {
+      "at": 899,
+      "id": "m4",
+      "kind": "cta",
+      "label": "Sígueme",
+      "payload": {}
+    },
+    {
+      "at": 45,
+      "id": "m5",
+      "kind": "thumbnail",
+      "label": "punto medio del hook",
+      "payload": {
+        "asset_id": "a1",
+        "source_frame": 345
+      }
+    }
+  ],
+  "meta": {
+    "decisions": [
+      {
+        "action": "build_timeline",
+        "agent": "edit-agent",
+        "revision": 1,
+        "why": "EditPlan 'educar' → timeline v1 (3 momentos)"
+      },
+      {
+        "action": "add_subtitles",
+        "agent": "subtitle-agent",
+        "revision": 2,
+        "why": "subtítulos líneas literales del transcript (3 clips, 0 low_confidence)"
+      },
+      {
+        "action": "apply_branding",
+        "agent": "branding-agent",
+        "revision": 3,
+        "why": "branding: logo 'logo1b' top_right"
+      },
+      {
+        "action": "apply_motion",
+        "agent": "visual-agent",
+        "revision": 4,
+        "why": "motion: 3 reframes, 0 zooms"
+      },
+      {
+        "action": "apply_music",
+        "agent": "audio-agent",
+        "revision": 5,
+        "why": "música 'music-1.mp3' (900f), ducking 1 rangos de voz"
+      },
+      {
+        "action": "skip",
+        "agent": "broll-agent",
+        "revision": 6,
+        "why": "sin valles de voz donde insertar b-roll"
+      },
+      {
+        "action": "apply_cta",
+        "agent": "cta-agent",
+        "revision": 7,
+        "why": "cta/thumbnail: CTA 'Reserva tu llamada' en 810-900f; thumbnail: punto medio del hook (a1@345)"
+      }
+    ],
+    "platform": "instagram",
+    "playbook": "reel-educativo"
+  },
+  "parent_revision": 6,
+  "project_id": "p1",
+  "revision": 7,
+  "schema_version": "1.0.0",
+  "tracks": [
+    {
+      "clips": [
+        {
+          "effects": [],
+          "id": "c0",
+          "in_point": 300,
+          "out_point": 390,
+          "source": "a1",
+          "start": 0,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.7778,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "effects": [],
+          "id": "c2",
+          "in_point": 600,
+          "out_point": 1260,
+          "source": "a1",
+          "start": 90,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.7778,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "effects": [],
+          "id": "c4",
+          "in_point": 1500,
+          "out_point": 1650,
+          "source": "a1",
+          "start": 750,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.7778,
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "id": "v0",
+      "kind": "video"
+    },
+    {
+      "clips": [
+        {
+          "effects": [],
+          "id": "c1",
+          "in_point": 300,
+          "out_point": 390,
+          "source": "a1",
+          "start": 0,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "effects": [],
+          "id": "c3",
+          "in_point": 600,
+          "out_point": 1260,
+          "source": "a1",
+          "start": 90,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "effects": [],
+          "id": "c5",
+          "in_point": 1500,
+          "out_point": 1650,
+          "source": "a1",
+          "start": 750,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "id": "a0",
+      "kind": "audio"
+    },
+    {
+      "clips": [
+        {
+          "effects": [
+            {
+              "params": {
+                "color_base": "#FFFFFF",
+                "color_emphasis": "",
+                "font": "Inter",
+                "karaoke": false,
+                "low_confidence": false,
+                "position": "bottom",
+                "size_rel": 1.0,
+                "uppercase": false
+              },
+              "type": "subtitle_style"
+            }
+          ],
+          "id": "c6",
+          "in_point": 0,
+          "out_point": 90,
+          "source": "¿Sabías que el 80% falla?",
+          "start": 0,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "effects": [
+            {
+              "params": {
+                "color_base": "#FFFFFF",
+                "color_emphasis": "",
+                "font": "Inter",
+                "karaoke": false,
+                "low_confidence": false,
+                "position": "bottom",
+                "size_rel": 1.0,
+                "uppercase": false
+              },
+              "type": "subtitle_style"
+            }
+          ],
+          "id": "c7",
+          "in_point": 0,
+          "out_point": 660,
+          "source": "La clave es el sistema...",
+          "start": 90,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "effects": [
+            {
+              "params": {
+                "color_base": "#FFFFFF",
+                "color_emphasis": "",
+                "font": "Inter",
+                "karaoke": false,
+                "low_confidence": false,
+                "position": "bottom",
+                "size_rel": 1.0,
+                "uppercase": false
+              },
+              "type": "subtitle_style"
+            }
+          ],
+          "id": "c8",
+          "in_point": 0,
+          "out_point": 150,
+          "source": "Sígueme para más.",
+          "start": 750,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "id": "s0",
+      "kind": "subtitle"
+    },
+    {
+      "clips": [
+        {
+          "effects": [
+            {
+              "params": {
+                "corner": "top_right",
+                "file": "logo1b.png",
+                "margin_rel": 0.04
+              },
+              "type": "logo_overlay"
+            }
+          ],
+          "id": "c9",
+          "in_point": 0,
+          "out_point": 900,
+          "source": "logo1b.png",
+          "start": 0,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "id": "g0",
+      "kind": "graphic"
+    },
+    {
+      "clips": [
+        {
+          "effects": [
+            {
+              "params": {
+                "duck_ranges": [
+                  {
+                    "end": 900,
+                    "start": 0
+                  }
+                ],
+                "ducking": true,
+                "target_lufs": -14.0,
+                "volume_rel": 0.7
+              },
+              "type": "music_mix"
+            }
+          ],
+          "id": "c10",
+          "in_point": 0,
+          "out_point": 900,
+          "source": "music-1.mp3",
+          "start": 0,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "id": "a1",
+      "kind": "audio"
+    },
+    {
+      "clips": [
+        {
+          "effects": [
+            {
+              "params": {
+                "color": "",
+                "destination": "cliender.com",
+                "font": "",
+                "position": "end",
+                "text": "Reserva tu llamada"
+              },
+              "type": "cta_overlay"
+            }
+          ],
+          "id": "c11",
+          "in_point": 0,
+          "out_point": 90,
+          "source": "Reserva tu llamada",
+          "start": 810,
+          "transform": {
+            "opacity": 1.0,
+            "rotation": 0.0,
+            "scale": 1.0,
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "id": "g1",
+      "kind": "graphic"
+    }
+  ]
+}

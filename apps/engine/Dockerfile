@@ -7,9 +7,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg \
 
 COPY --from=ghcr.io/astral-sh/uv:0.11 /uv /bin/uv
 
-# contracts (dependencia editable) + engine
+# contracts (dependencia editable) + engine + playbooks/fichas (datos, D7)
 COPY packages/contracts /app/packages/contracts
 COPY apps/engine /app/apps/engine
+COPY playbooks /app/playbooks
 
 WORKDIR /app/apps/engine
 RUN uv sync --no-dev

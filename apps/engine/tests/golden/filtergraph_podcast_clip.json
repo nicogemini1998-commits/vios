@@ -1,0 +1,23 @@
+{
+  "filter_complex": "[0:v]trim=start=40.000000:end=70.000000,setpts=PTS-STARTPTS,fps=30,scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920[bv0];[bv0]null[vbase];[vbase]scale=-2:480[vout]",
+  "inputs": [
+    [
+      "-i",
+      "/assets/pod-1"
+    ]
+  ],
+  "output_args": [
+    "-map",
+    "[vout]",
+    "-c:v",
+    "libx264",
+    "-preset",
+    "veryfast",
+    "-crf",
+    "28",
+    "-pix_fmt",
+    "yuv420p",
+    "-an"
+  ],
+  "has_ass": false
+}

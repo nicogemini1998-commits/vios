@@ -282,7 +282,7 @@ def test_edit_agent_requires_moments():
 
 # --- Golden brief e2e (F3 completo con FakeLLM) ---
 
-async def test_golden_brief_pipeline_bruto_a_timeline():
+async def test_golden_brief_pipeline_bruto_a_timeline(tmp_path):
     """El hito F3+F4: brief + intelligence → EditPlan → IR con las 4 capas de producción."""
     from vios_contracts import (
         Asset,
@@ -314,6 +314,12 @@ async def test_golden_brief_pipeline_bruto_a_timeline():
         PipelineEngine,
         TokenBudget,
         vios_default_graph,
+    )
+    from vios_engine.render import (
+        FakeFfmpegRunner,
+        InMemoryRenderRepo,
+        RenderQueue,
+        RenderService,
     )
 
     playbook = make_playbook().model_copy(update={
@@ -390,13 +396,27 @@ async def test_golden_brief_pipeline_bruto_a_timeline():
         ir = ctaist.apply_cta(ctx.ir, playbook, client)
         return PhaseResult(output=ir, ir=ir)
 
+    renderer = RenderService(InMemoryRenderRepo(), FakeFfmpegRunner(),
+                             RenderQueue(2, 1), tmp_path, timeout_s=5.0)
+    asset_paths = {"a1": "/assets/a1", "music-1.mp3": "/assets/music-1.mp3",
+                   "logo1b.png": "/assets/logo1b.png",
+                   "broll-1.mp4": "/assets/broll-1.mp4"}
+
+    async def h_render(ctx):
+        rec = await renderer.render(ctx.ir, "preview", "instagram",
+                                    client.client_id, asset_paths,
+                                    font_files={"Inter": "/fonts/Inter.ttf"})
+        return PhaseResult(output={"render_id": rec.id, "url": rec.url,
+                                   "status": rec.status})
+
     graph = vios_default_graph()
     store = InMemoryCheckpointStore()
     engine = PipelineEngine(
         graph,
         {"ingest": h_ingest, "director": h_director, "story": h_story,
          "edit": h_edit, "subtitle": h_subtitle, "branding": h_branding,
-         "visual": h_visual, "audio": h_audio, "broll": h_broll, "cta": h_cta},
+         "visual": h_visual, "audio": h_audio, "broll": h_broll, "cta": h_cta,
+         "render": h_render},
         store,
     )
     ctx = PipelineContext(job=JobState.new("j1", "p1", graph.order),
@@ -436,3 +456,7 @@ async def test_golden_brief_pipeline_bruto_a_timeline():
                       "visual-agent", "audio-agent", "broll-agent", "cta-agent"]
     # checkpoint IR persistido por cada fase que produce timeline
     assert len(store.saved) == 7
+    # render (F5): preview producida SIN nueva revisión — el render no edita
+    assert ctx.outputs["render"]["status"] == "done"
+    assert ctx.outputs["render"]["url"].endswith(".mp4")
+    assert ir.revision == 7
