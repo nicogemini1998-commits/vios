@@ -51,6 +51,36 @@ def validate(ir: TimelineIR) -> None:
             raise TimelineValidationError(f"marker {marker.id}: 'at' negativo")
 
 
+def s_to_frames(seconds: float, fps: int) -> int:
+    """Conversión canónica segundos → frames. ÚNICA aritmética de fps permitida."""
+    if fps <= 0:
+        raise ValueError(f"fps debe ser > 0, recibido {fps}")
+    return round(seconds * fps)
+
+
+def frames_to_s(frames: int, fps: int) -> float:
+    """Conversión canónica frames → segundos (inversa de s_to_frames)."""
+    if fps <= 0:
+        raise ValueError(f"fps debe ser > 0, recibido {fps}")
+    return frames / fps
+
+
+def source_frame_to_timeline(ir: TimelineIR, asset_id: str, source_frame: int) -> int | None:
+    """Remapea un frame del SOURCE al frame de timeline donde quedó tras la edición.
+
+    Busca en tracks de vídeo el clip de ese asset cuyo rango [in_point, out_point)
+    contiene el frame. None si ese instante fue cortado (no está en la timeline).
+    Compartido por las capas F4 (subtítulos, ducking, b-roll).
+    """
+    for track in ir.tracks:
+        if track.kind != "video":
+            continue
+        for clip in track.clips:
+            if clip.source == asset_id and clip.in_point <= source_frame < clip.out_point:
+                return clip.start + (source_frame - clip.in_point)
+    return None
+
+
 class Change(BaseModel):
     op: str            # add | remove | modify
     path: str          # ej. tracks/v0, tracks/v0/clips/c0, markers/m0

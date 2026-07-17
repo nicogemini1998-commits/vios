@@ -14,6 +14,7 @@ from .client_profile import (
     EditRules,
     FontRef,
     Identity,
+    IntroOutro,
     Learning,
     Library,
     LogoRef,
@@ -35,6 +36,7 @@ from .edit_plan import (
     SelectedMoment,
     validate_edit_plan,
 )
+from .effects import EFFECT_LOGO_OVERLAY, EFFECT_SUBTITLE_STYLE, KNOWN_EFFECTS
 from .media_intelligence import (
     EnergyPoint,
     Keyframe,
@@ -77,7 +79,10 @@ from .timeline_ops import (
     TimelineValidationError,
     diff,
     export_json_schema,
+    frames_to_s,
     from_json,
+    s_to_frames,
+    source_frame_to_timeline,
     to_json,
     validate,
 )
@@ -86,12 +91,12 @@ __all__ = [
     # timeline
     "SCHEMA_VERSION", "Canvas", "Change", "Clip", "Decision", "Effect", "Marker",
     "Meta", "TimelineDraft", "TimelineIR", "TimelineValidationError", "Track",
-    "Transform", "create_timeline", "diff", "export_json_schema", "from_json",
-    "to_json", "validate",
+    "Transform", "create_timeline", "diff", "export_json_schema", "frames_to_s",
+    "from_json", "s_to_frames", "source_frame_to_timeline", "to_json", "validate",
     # client profile (A-H)
     "Asset", "Audience", "Blacklist", "ClientCTA", "ClientProfile", "ClientSubtitleStyle",
     "ColorToken", "Commercial", "EditRules", "FontRef", "Identity", "Learning",
-    "Library", "LogoRef", "MusicRules", "Pacing", "Person", "Target", "Voice",
+    "IntroOutro", "Library", "LogoRef", "MusicRules", "Pacing", "Person", "Target", "Voice",
     "VisualIdentity", "client_missing_blocks", "is_client_editable",
     # playbook
     "Beat", "CTAPolicy", "DurationRange", "HookSpec", "MusicPolicy", "PacingPolicy",
@@ -99,6 +104,8 @@ __all__ = [
     # edit plan (M6)
     "EditPlan", "EditPlanValidationError", "HookCandidate", "PlannedBeat",
     "SelectedMoment", "validate_edit_plan",
+    # effects (F4)
+    "EFFECT_LOGO_OVERLAY", "EFFECT_SUBTITLE_STYLE", "KNOWN_EFFECTS",
     # media intelligence (M4)
     "MediaIntelligence", "Transcript", "Segment", "Word", "Scene", "Silence",
     "EnergyPoint", "Keyframe", "QualityScore",

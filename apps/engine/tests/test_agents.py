@@ -284,18 +284,29 @@ def test_edit_agent_requires_moments():
 # --- Golden brief e2e (F3 completo con FakeLLM) ---
 
 async def test_golden_brief_pipeline_bruto_a_timeline():
-    """El hito F3: brief + intelligence → EditPlan → Timeline IR coherente."""
+    """El hito F3+F4: brief + intelligence → EditPlan → IR editada+subtitulada+brandeada."""
+    from vios_contracts import ClientSubtitleStyle, LogoRef, SubtitlePolicy, VisualIdentity
+    from vios_engine.agents import BrandingAgent, SubtitleAgent
     from vios_engine.pipeline import (
         InMemoryCheckpointStore, JobState, PhaseResult, PipelineContext,
         PipelineEngine, TokenBudget, vios_default_graph,
     )
 
-    playbook = make_playbook()
-    client = make_client()
+    playbook = make_playbook().model_copy(update={
+        "subtitles": SubtitlePolicy(enabled=True, karaoke=False),
+    })
+    client = make_client().model_copy(update={
+        "visual": VisualIdentity(
+            logos=[LogoRef(name="logo1b", file="logo1b.png")],
+            subtitle_style=ClientSubtitleStyle(font="Inter", color_base="#FFFFFF"),
+        ),
+    })
     intel = make_intelligence()
     director = DirectorAgent(FakeLLM([DIRECTOR_JSON]))
     story = StoryAgent(FakeLLM([STORY_JSON]))
     editor = EditAgent(fps=30)
+    subtitler = SubtitleAgent()
+    brander = BrandingAgent()
 
     async def h_ingest(ctx):
         return PhaseResult(output=intel)
@@ -314,11 +325,21 @@ async def test_golden_brief_pipeline_bruto_a_timeline():
         ir = editor.build_timeline(ctx.outputs["story"], playbook)
         return PhaseResult(output=ir, ir=ir)
 
+    async def h_subtitle(ctx):
+        ir = subtitler.add_subtitles(ctx.ir, ctx.outputs["ingest"], playbook, client)
+        return PhaseResult(output=ir, ir=ir)
+
+    async def h_branding(ctx):
+        ir = brander.apply_branding(ctx.ir, client, playbook,
+                                    intel_by_asset=ctx.outputs["ingest"])
+        return PhaseResult(output=ir, ir=ir)
+
     graph = vios_default_graph()
     store = InMemoryCheckpointStore()
     engine = PipelineEngine(
         graph,
-        {"ingest": h_ingest, "director": h_director, "story": h_story, "edit": h_edit},
+        {"ingest": h_ingest, "director": h_director, "story": h_story,
+         "edit": h_edit, "subtitle": h_subtitle, "branding": h_branding},
         store,
     )
     ctx = PipelineContext(job=JobState.new("j1", "p1", graph.order),
@@ -336,5 +357,13 @@ async def test_golden_brief_pipeline_bruto_a_timeline():
     total_s = total_frames / ir.fps
     rng = playbook.ideal_duration["instagram"]
     assert rng.min_s <= total_s <= rng.max_s
-    # checkpoint IR persistido
-    assert len(store.saved) == 1
+    # capas F4: subtitulada (texto literal) y brandeada, una revisión por fase
+    assert ir.revision == 3
+    subs = next(t for t in ir.tracks if t.kind == "subtitle")
+    assert subs.clips[0].source == "¿Sabías que el 80% falla?"
+    graphic = next(t for t in ir.tracks if t.kind == "graphic")
+    assert graphic.clips[0].source == "logo1b.png"
+    agents = [d.agent for d in ir.meta.decisions]
+    assert agents == ["edit-agent", "subtitle-agent", "branding-agent"]
+    # checkpoint IR persistido por cada fase que produce timeline
+    assert len(store.saved) == 3

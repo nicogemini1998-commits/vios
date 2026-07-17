@@ -71,6 +71,16 @@ class TimelineDraft:
         )
         return mid
 
+    def add_clip_effect(self, track_id: str, clip_id: str, effect: dict[str, Any]) -> None:
+        """Añade un effect (append) a un clip existente. KeyError si no existe."""
+        clip = self._find_clip(track_id, clip_id)
+        clip.setdefault("effects", []).append(effect)
+
+    def set_clip_transform(self, track_id: str, clip_id: str, transform: dict[str, Any]) -> None:
+        """Reemplaza el transform de un clip existente. KeyError si no existe."""
+        clip = self._find_clip(track_id, clip_id)
+        clip["transform"] = transform
+
     def remove_track(self, track_id: str) -> None:
         self._data["tracks"] = [t for t in self._data["tracks"] if t["id"] != track_id]
 
@@ -80,6 +90,13 @@ class TimelineDraft:
 
     def remove_marker(self, marker_id: str) -> None:
         self._data["markers"] = [m for m in self._data["markers"] if m["id"] != marker_id]
+
+    def _find_clip(self, track_id: str, clip_id: str) -> dict[str, Any]:
+        track = self._find_track(track_id)
+        for c in track["clips"]:
+            if c["id"] == clip_id:
+                return c
+        raise KeyError(f"clip no encontrado: {clip_id} (track {track_id})")
 
     def _find_track(self, track_id: str) -> dict[str, Any]:
         for t in self._data["tracks"]:

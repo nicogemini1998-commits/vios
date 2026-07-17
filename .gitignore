@@ -17,5 +17,8 @@ build/
 node_modules/
 render-svc/out/
 
+# claude config — settings.json compartido SÍ va a git, lo local NO
+.claude/settings.local.json*
+
 # os
 .DS_Store

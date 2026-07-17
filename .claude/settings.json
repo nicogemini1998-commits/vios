@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv run:*)", "Bash(uv sync:*)", "Bash(uv add:*)", "Bash(uvx:*)",
+      "Bash(pytest:*)", "Bash(make:*)", "Bash(ruff:*)", "Bash(python:*)",
+      "Bash(docker compose:*)", "Bash(docker ps:*)", "Bash(docker logs:*)",
+      "Bash(node:*)", "Bash(npm:*)", "Bash(curl -s http://localhost:*)",
+      "Bash(git status)", "Bash(git add:*)", "Bash(git commit:*)",
+      "Bash(git push:*)", "Bash(git pull:*)", "Bash(git fetch:*)",
+      "Bash(git log:*)", "Bash(git diff:*)", "Bash(git branch:*)",
+      "Bash(git checkout:*)", "Bash(git switch:*)", "Bash(git restore:*)",
+      "Read(*)", "Edit(*)", "Write(*)"
+    ],
+    "deny": ["Read(.env)", "Read(**/.env)"]
+  }
+}

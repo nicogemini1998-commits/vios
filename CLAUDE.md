@@ -56,7 +56,11 @@ make health                   # curl al /health del engine
 ## Convenciones de código (respétalas)
 
 - **Unidades:** MediaIntelligence y EditPlan en **segundos**; Timeline IR en **frames**
-  (`fps` en la raíz). La conversión la hace SOLO el Edit Agent. No mezclar.
+  (`fps` en la raíz). Conversión segundos↔frames: UNA sola función canónica en
+  `timeline_ops` (`s_to_frames`/`frames_to_s`); ningún agente hace aritmética de fps
+  inline. El Edit Agent sigue siendo el único que MATERIALIZA cortes/clips desde el
+  EditPlan; las capas F4 solo posicionan sobre la IR ya cortada usando esas funciones
+  y el helper de remapeo `source_frame_to_timeline`.
 - **Timeline IR inmutable por revisión:** nunca mutar una IR; usar `TimelineDraft` →
   `.commit(by, why)` que produce revisión+1 con `Decision` auditada (quién y por qué).
 - **Anti-alucinación:** los agentes solo usan datos reales (transcript, biblioteca).
@@ -75,10 +79,12 @@ make health                   # curl al /health del engine
 ## Estado y próximo paso
 
 - **Completadas:** F0 Fundación (M0) · F1 Contratos (M1–M2) · F2 Ingesta (M3–M4) ·
-  F3 Cerebro (M5–M7). 8/14 módulos. Suite verde (engine 59, contracts 33).
-- **Próximo: F4 Capas de producción** — M8 Subtitle+Branding, M9 Visual/Motion+Audio,
-  M10 B-Roll+CTA/Thumbnail. Todos operan sobre Timeline IR añadiendo revisiones vía
-  `TimelineDraft`. (Ya está extendido con `add_clip_effect`/`set_clip_transform` si el
-  commit de F4 está presente; si no, empezar por ahí.)
+  F3 Cerebro (M5–M7) · F4/M8 Subtitle+Branding. 9/14 módulos. Suite verde
+  (engine 74, contracts 43).
+- **Próximo: F4 restante** — M9 Visual/Motion+Audio, M10 B-Roll+CTA/Thumbnail.
+  Operan sobre Timeline IR añadiendo revisiones vía `TimelineDraft`
+  (`add_clip_effect`/`set_clip_transform` ya disponibles) y reutilizan
+  `source_frame_to_timeline` (ducking alineado a voz, b-roll en valles).
+  Grafo actual: ingest → director → story → edit → subtitle → branding.
 - **Plan maestro y docs de módulos** viven en OneDrive (carpeta VIOS de Cliender), no
   en el repo. Pídeselos a Nico si necesitas el detalle de diseño.
