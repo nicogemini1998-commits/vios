@@ -41,5 +41,7 @@ LOGO_WIDTH_REL = 0.15
 
 # tipografía de subtítulos/CTA relativa a la altura del canvas
 SUBTITLE_FONT_SIZE_REL = 0.045
-CTA_FONT_SIZE_REL = 0.055
+# calibrado con el primer render real (MVP): 0.055 desbordaba el ancho 9:16
+# con el CTA de 27 chars de la ficha Cliender
+CTA_FONT_SIZE_REL = 0.034
 CTA_Y_REL = 0.78          # dentro de la safe-area inferior sin pisar subtítulos
