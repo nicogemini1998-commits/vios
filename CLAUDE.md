@@ -79,13 +79,13 @@ make health                   # curl al /health del engine
 ## Estado y próximo paso
 
 - **Completadas:** F0 Fundación (M0) · F1 Contratos (M1–M2) · F2 Ingesta (M3–M4) ·
-  F3 Cerebro (M5–M7) · F4 M8 Subtitle+Branding + M9 Visual/Motion+Audio.
-  10/14 módulos. Suite verde (engine 89, contracts 45).
-- **Próximo: M10 B-Roll + CTA/Thumbnail** (cierra F4). Opera sobre Timeline IR
-  añadiendo revisiones vía `TimelineDraft`; reutiliza `source_frame_to_timeline`
-  y puede promocionar el helper voz-en-timeline de `agents/audio.py` a
-  `timeline_ops` (b-roll en valles = complemento de los rangos de voz).
-  Grafo actual: ingest → director → story → edit → subtitle → branding →
-  visual → audio.
+  F3 Cerebro (M5–M7) · **F4 COMPLETA** (M8 Subtitle+Branding · M9 Visual/Motion+Audio ·
+  M10 B-Roll+CTA/Thumbnail). 11/14 módulos. Suite verde (engine 106, contracts 50).
+- **Próximo: M11 Render Service** (arranca F5): IR → Remotion composition →
+  preview 480p → masters por plataforma (generalizar el servicio CDPro :4010,
+  host :4011 en `apps/render-svc/`). Dependencia externa Remotion: si falta una
+  pieza, stub + test + nota en BITACORA y seguir.
+  Grafo actual (10 fases): ingest → director → story → edit → subtitle →
+  branding → visual → audio → broll → cta.
 - **Plan maestro y docs de módulos** viven en OneDrive (carpeta VIOS de Cliender), no
   en el repo. Pídeselos a Nico si necesitas el detalle de diseño.

@@ -12,3 +12,14 @@ LOGO_MARGIN_REL = 0.04
 
 # intensidad de zoom por cut_style del playbook (M9)
 ZOOM_INTENSITY = {"calm": 0.03, "medium": 0.05, "aggressive": 0.08}
+
+# valle mínimo sin voz para insertar b-roll (M10)
+BROLL_MIN_VALLEY_S = 1.0
+
+# duración del overlay de CTA (M10)
+CTA_DURATION_S = 3.0
+
+
+def cover_scale(canvas_width: int, canvas_height: int, width: int, height: int) -> float:
+    """Escala mínima que cubre el canvas completo (cover centrado), 4 decimales."""
+    return round(max(canvas_width / width, canvas_height / height), 4)

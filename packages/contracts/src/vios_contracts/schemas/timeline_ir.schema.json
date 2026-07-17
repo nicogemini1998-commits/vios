@@ -127,7 +127,8 @@
           "enum": [
             "beat",
             "hook",
-            "cta"
+            "cta",
+            "thumbnail"
           ],
           "title": "Kind",
           "type": "string"

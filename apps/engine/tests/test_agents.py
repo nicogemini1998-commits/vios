@@ -9,6 +9,7 @@ import pytest
 from vios_contracts import (
     Beat,
     ClientProfile,
+    CTAPolicy,
     DurationRange,
     EditPlan,
     HookCandidate,
@@ -16,17 +17,15 @@ from vios_contracts import (
     MediaIntelligence,
     PlannedBeat,
     Playbook,
-    Segment,
     Scene,
+    Segment,
     SelectedMoment,
     Transcript,
-    CTAPolicy,
     validate,
     validate_edit_plan,
 )
 from vios_engine.agents import DirectorAgent, EditAgent, FakeLLM, LLMParseError, StoryAgent
 from vios_engine.agents.llm import extract_json
-
 
 # --- fixtures sintéticas ---
 
@@ -286,20 +285,41 @@ def test_edit_agent_requires_moments():
 async def test_golden_brief_pipeline_bruto_a_timeline():
     """El hito F3+F4: brief + intelligence → EditPlan → IR con las 4 capas de producción."""
     from vios_contracts import (
-        Asset, ClientSubtitleStyle, EditRules, Library, LogoRef,
-        MusicPolicy, MusicRules, SubtitlePolicy, VisualIdentity,
+        Asset,
+        Audience,
+        ClientCTA,
+        ClientSubtitleStyle,
+        CTAPolicy,
+        EditRules,
+        Library,
+        LogoRef,
+        MusicPolicy,
+        MusicRules,
+        SubtitlePolicy,
+        VisualIdentity,
     )
     from vios_engine.agents import (
-        AudioMusicAgent, BrandingAgent, SubtitleAgent, VisualMotionAgent,
+        AudioMusicAgent,
+        BrandingAgent,
+        BRollAgent,
+        CTAThumbnailAgent,
+        SubtitleAgent,
+        VisualMotionAgent,
     )
     from vios_engine.pipeline import (
-        InMemoryCheckpointStore, JobState, PhaseResult, PipelineContext,
-        PipelineEngine, TokenBudget, vios_default_graph,
+        InMemoryCheckpointStore,
+        JobState,
+        PhaseResult,
+        PipelineContext,
+        PipelineEngine,
+        TokenBudget,
+        vios_default_graph,
     )
 
     playbook = make_playbook().model_copy(update={
         "subtitles": SubtitlePolicy(enabled=True, karaoke=False),
         "music": MusicPolicy(enabled=True, ducking=True),
+        "cta": CTAPolicy(enabled=True, position="end", default_text="Sígueme"),
     })
     client = make_client().model_copy(update={
         "visual": VisualIdentity(
@@ -307,12 +327,17 @@ async def test_golden_brief_pipeline_bruto_a_timeline():
             subtitle_style=ClientSubtitleStyle(font="Inter", color_base="#FFFFFF"),
         ),
         "edit_rules": EditRules(music=MusicRules(volume_rel=0.7)),
-        "library": Library(music_sfx=[Asset(url="music-1.mp3")]),
+        "audience": Audience(cta=ClientCTA(text="Reserva tu llamada",
+                                           destination="cliender.com")),
+        "library": Library(music_sfx=[Asset(url="music-1.mp3")],
+                           broll=[Asset(url="broll-1.mp4", description="oficina")]),
     })
     intel = make_intelligence()
     intel["a1"] = intel["a1"].model_copy(update={"width": 1920, "height": 1080})
     intel["music-1.mp3"] = MediaIntelligence(asset_id="music-1.mp3",
                                              source_hash="hm", duration_s=45.0)
+    intel["broll-1.mp4"] = MediaIntelligence(asset_id="broll-1.mp4", source_hash="hb",
+                                             duration_s=2.0, width=1920, height=1080)
     director = DirectorAgent(FakeLLM([DIRECTOR_JSON]))
     story = StoryAgent(FakeLLM([STORY_JSON]))
     editor = EditAgent(fps=30)
@@ -320,6 +345,8 @@ async def test_golden_brief_pipeline_bruto_a_timeline():
     brander = BrandingAgent()
     visualist = VisualMotionAgent()
     musician = AudioMusicAgent()
+    broller = BRollAgent()
+    ctaist = CTAThumbnailAgent()
 
     async def h_ingest(ctx):
         return PhaseResult(output=intel)
@@ -355,13 +382,21 @@ async def test_golden_brief_pipeline_bruto_a_timeline():
         ir = musician.apply_music(ctx.ir, ctx.outputs["ingest"], playbook, client)
         return PhaseResult(output=ir, ir=ir)
 
+    async def h_broll(ctx):
+        ir = broller.apply_broll(ctx.ir, ctx.outputs["ingest"], playbook, client)
+        return PhaseResult(output=ir, ir=ir)
+
+    async def h_cta(ctx):
+        ir = ctaist.apply_cta(ctx.ir, playbook, client)
+        return PhaseResult(output=ir, ir=ir)
+
     graph = vios_default_graph()
     store = InMemoryCheckpointStore()
     engine = PipelineEngine(
         graph,
         {"ingest": h_ingest, "director": h_director, "story": h_story,
          "edit": h_edit, "subtitle": h_subtitle, "branding": h_branding,
-         "visual": h_visual, "audio": h_audio},
+         "visual": h_visual, "audio": h_audio, "broll": h_broll, "cta": h_cta},
         store,
     )
     ctx = PipelineContext(job=JobState.new("j1", "p1", graph.order),
@@ -379,8 +414,8 @@ async def test_golden_brief_pipeline_bruto_a_timeline():
     total_s = total_frames / ir.fps
     rng = playbook.ideal_duration["instagram"]
     assert rng.min_s <= total_s <= rng.max_s
-    # capas F4 completas: subtítulos, branding, motion y música — una revisión por fase
-    assert ir.revision == 5
+    # capas F4 completas: 6 capas — una revisión por fase
+    assert ir.revision == 7
     subs = next(t for t in ir.tracks if t.kind == "subtitle")
     assert subs.clips[0].source == "¿Sabías que el 80% falla?"
     graphic = next(t for t in ir.tracks if t.kind == "graphic")
@@ -392,8 +427,12 @@ async def test_golden_brief_pipeline_bruto_a_timeline():
     assert music_track.clips[0].source == "music-1.mp3"
     mix = next(e for e in music_track.clips[0].effects if e.type == "music_mix")
     assert mix.params["volume_rel"] == 0.7 and mix.params["duck_ranges"]
+    # cta: overlay con el copy real de la ficha + thumbnail anotado
+    cta_track = [t for t in ir.tracks if t.kind == "graphic"][-1]
+    assert cta_track.clips[0].source == "Reserva tu llamada"
+    assert any(m.kind == "thumbnail" for m in ir.markers)
     agents = [d.agent for d in ir.meta.decisions]
     assert agents == ["edit-agent", "subtitle-agent", "branding-agent",
-                      "visual-agent", "audio-agent"]
+                      "visual-agent", "audio-agent", "broll-agent", "cta-agent"]
     # checkpoint IR persistido por cada fase que produce timeline
-    assert len(store.saved) == 5
+    assert len(store.saved) == 7

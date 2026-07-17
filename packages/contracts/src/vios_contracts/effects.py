@@ -21,6 +21,11 @@ EFFECT_ZOOM = "zoom"
 # params: volume_rel, target_lufs, ducking (bool), duck_ranges ([{start, end}] en frames).
 EFFECT_MUSIC_MIX = "music_mix"
 
+# Overlay de CTA aplicado por el CTAThumbnailAgent al clip del track graphic (M10).
+# params: text, destination, position, font, color.
+EFFECT_CTA_OVERLAY = "cta_overlay"
+
 KNOWN_EFFECTS = frozenset({
     EFFECT_SUBTITLE_STYLE, EFFECT_LOGO_OVERLAY, EFFECT_ZOOM, EFFECT_MUSIC_MIX,
+    EFFECT_CTA_OVERLAY,
 })

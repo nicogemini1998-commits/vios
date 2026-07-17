@@ -14,7 +14,7 @@ from pydantic import BaseModel, ConfigDict, Field
 SCHEMA_VERSION = "1.0.0"
 
 TrackKind = Literal["video", "audio", "subtitle", "graphic"]
-MarkerKind = Literal["beat", "hook", "cta"]
+MarkerKind = Literal["beat", "hook", "cta", "thumbnail"]
 
 # prefijo de id determinista por tipo (RF4)
 _KIND_PREFIX: dict[str, str] = {

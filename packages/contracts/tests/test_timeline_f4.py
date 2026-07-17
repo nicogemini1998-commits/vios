@@ -8,7 +8,6 @@ from vios_contracts import (
     source_frame_to_timeline,
 )
 
-
 # --- s_to_frames / frames_to_s (única aritmética de fps permitida) ---
 
 def test_s_to_frames_redondea():

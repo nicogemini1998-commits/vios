@@ -16,6 +16,7 @@ from vios_contracts import (
     TimelineDraft,
     TimelineIR,
     s_to_frames,
+    speech_ranges_in_timeline,
     timeline_end,
 )
 
@@ -55,7 +56,8 @@ class AudioMusicAgent:
             return draft.commit(by=AGENT_NAME, why="timeline vacía", action="skip")
 
         music_frames = min(s_to_frames(duration_s, ir.fps), end)
-        duck_ranges = self._speech_ranges(ir, intel_by_asset) if policy.ducking else []
+        duck_ranges = (speech_ranges_in_timeline(ir, intel_by_asset)
+                       if policy.ducking else [])
         rules = profile.edit_rules.music if profile.edit_rules else None
 
         tid = draft.add_track("audio")
@@ -76,29 +78,3 @@ class AudioMusicAgent:
             why=f"música '{music.url}' ({music_frames}f{short}), "
                 f"ducking {len(duck_ranges)} rangos de voz",
             action="apply_music")
-
-    def _speech_ranges(self, ir: TimelineIR, intel_by_asset) -> list[tuple[int, int]]:
-        """Intervalos de voz en frames de timeline (clampeados al clip, fusionados)."""
-        fps = ir.fps
-        raw: list[tuple[int, int]] = []
-        for track in ir.tracks:
-            if track.kind != "video":
-                continue
-            for clip in track.clips:
-                intel = intel_by_asset.get(clip.source)
-                if intel is None:
-                    continue
-                for seg in intel.transcript.segments:
-                    sf = max(s_to_frames(seg.start_s, fps), clip.in_point)
-                    ef = min(s_to_frames(seg.end_s, fps), clip.out_point)
-                    if ef > sf:
-                        raw.append((clip.start + sf - clip.in_point,
-                                    clip.start + ef - clip.in_point))
-        raw.sort()
-        merged: list[tuple[int, int]] = []
-        for s, e in raw:
-            if merged and s <= merged[-1][1]:       # solapados o adyacentes
-                merged[-1] = (merged[-1][0], max(merged[-1][1], e))
-            else:
-                merged.append((s, e))
-        return merged

@@ -7,6 +7,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
+from .media_intelligence import MediaIntelligence
 from .timeline_ir import TimelineIR
 
 
@@ -85,6 +86,39 @@ def timeline_end(ir: TimelineIR) -> int:
     """Último frame ocupado por cualquier clip (0 si la timeline está vacía)."""
     ends = [c.start + (c.out_point - c.in_point) for t in ir.tracks for c in t.clips]
     return max(ends, default=0)
+
+
+def speech_ranges_in_timeline(
+    ir: TimelineIR, intel_by_asset: dict[str, MediaIntelligence]
+) -> list[tuple[int, int]]:
+    """Intervalos de voz en frames de timeline (clampeados al clip, fusionados).
+
+    Remapea los segmentos del transcript de cada clip de vídeo a la timeline.
+    Compartido por F4: ducking (M9, música baja donde hay voz) y b-roll
+    (M10, valles = complemento de estos rangos).
+    """
+    raw: list[tuple[int, int]] = []
+    for track in ir.tracks:
+        if track.kind != "video":
+            continue
+        for clip in track.clips:
+            intel = intel_by_asset.get(clip.source)
+            if intel is None:
+                continue
+            for seg in intel.transcript.segments:
+                sf = max(s_to_frames(seg.start_s, ir.fps), clip.in_point)
+                ef = min(s_to_frames(seg.end_s, ir.fps), clip.out_point)
+                if ef > sf:
+                    raw.append((clip.start + sf - clip.in_point,
+                                clip.start + ef - clip.in_point))
+    raw.sort()
+    merged: list[tuple[int, int]] = []
+    for s, e in raw:
+        if merged and s <= merged[-1][1]:       # solapados o adyacentes
+            merged[-1] = (merged[-1][0], max(merged[-1][1], e))
+        else:
+            merged.append((s, e))
+    return merged
 
 
 class Change(BaseModel):

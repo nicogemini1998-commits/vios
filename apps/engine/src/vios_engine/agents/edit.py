@@ -14,6 +14,7 @@ from vios_contracts import (
     TimelineDraft,
     TimelineIR,
     create_timeline,
+    s_to_frames,
 )
 
 AGENT_NAME = "edit-agent"
@@ -25,10 +26,6 @@ _PLATFORM_CANVAS: dict[str, Canvas] = {
     "youtube": Canvas(width=1920, height=1080, aspect="16:9"),
 }
 _DEFAULT_CANVAS = Canvas(width=1080, height=1920, aspect="9:16")
-
-
-def _to_frames(seconds: float, fps: int) -> int:
-    return round(seconds * fps)
 
 
 class EditAgent:
@@ -54,8 +51,8 @@ class EditAgent:
 
         cursor = 0
         for m in sorted(plan.moments, key=lambda m: m.order):
-            in_f = _to_frames(m.start_s, self._fps)
-            out_f = _to_frames(m.end_s, self._fps)
+            in_f = s_to_frames(m.start_s, self._fps)
+            out_f = s_to_frames(m.end_s, self._fps)
             draft.add_clip(video_track, source=m.asset_id, start=cursor,
                            in_point=in_f, out_point=out_f)
             draft.add_clip(audio_track, source=m.asset_id, start=cursor,

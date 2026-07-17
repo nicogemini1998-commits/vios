@@ -16,7 +16,7 @@ from vios_contracts import (
     TimelineIR,
 )
 
-from .layout import ZOOM_INTENSITY
+from .layout import ZOOM_INTENSITY, cover_scale
 
 AGENT_NAME = "visual-agent"
 
@@ -51,11 +51,11 @@ class VisualMotionAgent:
                 if intel is None or intel.width is None or intel.height is None:
                     missing.add(clip.source)
                     continue
-                # cover centrado: escala mínima que cubre el canvas completo
-                scale = max(canvas.width / intel.width, canvas.height / intel.height)
+                scale = cover_scale(canvas.width, canvas.height,
+                                    intel.width, intel.height)
                 if abs(scale - 1.0) < 1e-9:
                     continue
-                draft.set_clip_transform(track.id, clip.id, {"scale": round(scale, 4)})
+                draft.set_clip_transform(track.id, clip.id, {"scale": scale})
                 count += 1
         if missing:
             notes.append(f"sin dimensiones (reframe omitido): {sorted(missing)}")

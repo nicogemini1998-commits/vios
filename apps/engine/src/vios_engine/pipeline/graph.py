@@ -61,7 +61,7 @@ class PipelineGraph:
 
 def vios_default_graph() -> PipelineGraph:
     """Grafo F4 completo: ingest → director → story → edit → subtitle → branding
-    → visual → audio.
+    → visual → audio → broll → cta.
 
     Las capas F4 son secuenciales sobre la IR: cada fase parte del ctx.ir de la
     anterior y produce 1 revisión + Decision + checkpoint.
@@ -75,4 +75,6 @@ def vios_default_graph() -> PipelineGraph:
         PhaseSpec(name="branding", deps=("subtitle",)),
         PhaseSpec(name="visual", deps=("branding",)),
         PhaseSpec(name="audio", deps=("visual",)),
+        PhaseSpec(name="broll", deps=("audio",)),
+        PhaseSpec(name="cta", deps=("broll",)),
     ])

@@ -1,6 +1,8 @@
-"""Agentes VIOS (M6 Director+Story, M7 Edit, M8 Subtitle+Branding, M9 Visual+Audio)."""
+"""Agentes VIOS (M6-M7 cerebro, M8-M10 capas F4: Subtitle/Branding/Visual/Audio/BRoll/CTA)."""
 from .audio import AudioMusicAgent
 from .branding import BrandingAgent
+from .broll import BRollAgent
+from .cta import CTAThumbnailAgent
 from .director import DirectorAgent
 from .edit import EditAgent
 from .llm import (
@@ -19,8 +21,9 @@ from .subtitle import SubtitleAgent
 from .visual import VisualMotionAgent
 
 __all__ = [
-    "AnthropicLLM", "AudioMusicAgent", "BrandingAgent", "ClaudeAgentLLM",
-    "DirectorAgent", "EditAgent", "FakeLLM", "LLMClient", "LLMParseError",
-    "LLMResult", "StoryAgent", "SubtitleAgent", "VisualMotionAgent",
-    "build_llm", "extract_json", "parse_agent_messages",
+    "AnthropicLLM", "AudioMusicAgent", "BRollAgent", "BrandingAgent",
+    "CTAThumbnailAgent", "ClaudeAgentLLM", "DirectorAgent", "EditAgent",
+    "FakeLLM", "LLMClient", "LLMParseError", "LLMResult", "StoryAgent",
+    "SubtitleAgent", "VisualMotionAgent", "build_llm", "extract_json",
+    "parse_agent_messages",
 ]
